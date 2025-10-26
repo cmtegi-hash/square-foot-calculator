@@ -9,16 +9,19 @@ if "rooms" not in st.session_state:
 if "name" not in st.session_state:
     st.session_state.name = ""
 if "length" not in st.session_state:
-    st.session_state.length = 0.0
+    st.session_state.length = ""
 if "width" not in st.session_state:
-    st.session_state.width = 0.0
+    st.session_state.width = ""
 
 # Function to add room
 def add_room():
-    name = st.session_state.name
-    length = st.session_state.length
-    width = st.session_state.width
+    try:
+        length = float(st.session_state.length)
+        width = float(st.session_state.width)
+    except ValueError:
+        return  # Skip if input is not valid
 
+    name = st.session_state.name
     if name and length > 0 and width > 0:
         area = int(length * width)
         st.session_state.rooms.append((name, area))
@@ -26,13 +29,13 @@ def add_room():
 
         # Clear fields
         st.session_state.name = ""
-        st.session_state.length = 0.0
-        st.session_state.width = 0.0
+        st.session_state.length = ""
+        st.session_state.width = ""
 
-# Input fields
+# Input fields (text-based for blank appearance)
 st.text_input("Room name", key="name")
-st.number_input("Length (in feet)", min_value=0.0, format="%.2f", key="length")
-st.number_input("Width (in feet)", min_value=0.0, format="%.2f", key="width")
+st.text_input("Length (in feet)", key="length")
+st.text_input("Width (in feet)", key="width")
 
 # Button
 st.button("Add room", on_click=add_room)
