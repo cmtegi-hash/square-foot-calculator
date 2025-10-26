@@ -1,39 +1,49 @@
 import streamlit as st
 
-st.title("📐 Calculadora de pies cuadrados")
+st.title("📐 Square Footage Calculator")
 
-# Inicializar estado
-if "habitaciones" not in st.session_state:
-    st.session_state.habitaciones = []
+# Initialize state
+if "rooms" not in st.session_state:
+    st.session_state.rooms = []
     st.session_state.total_area = 0
+if "name" not in st.session_state:
+    st.session_state.name = ""
+if "length" not in st.session_state:
+    st.session_state.length = 0.0
+if "width" not in st.session_state:
+    st.session_state.width = 0.0
 
-# Función para agregar habitación
-def agregar_habitacion():
-    if st.session_state.nombre and st.session_state.largo > 0 and st.session_state.ancho > 0:
-        area = int(st.session_state.largo * st.session_state.ancho)
-        st.session_state.habitaciones.append((st.session_state.nombre, area))
+# Function to add room
+def add_room():
+    name = st.session_state.name
+    length = st.session_state.length
+    width = st.session_state.width
+
+    if name and length > 0 and width > 0:
+        area = int(length * width)
+        st.session_state.rooms.append((name, area))
         st.session_state.total_area += area
 
-        # Limpiar campos usando widget keys
-        st.session_state.nombre = ""
-        st.session_state.largo = 0.0
-        st.session_state.ancho = 0.0
+        # Clear fields
+        st.session_state.name = ""
+        st.session_state.length = 0.0
+        st.session_state.width = 0.0
 
-# Entradas con claves únicas
-st.text_input("Nombre de la habitación", key="nombre")
-st.number_input("Largo (en pies)", min_value=0.0, format="%.2f", key="largo")
-st.number_input("Ancho (en pies)", min_value=0.0, format="%.2f", key="ancho")
+# Input fields
+st.text_input("Room name", key="name")
+st.number_input("Length (in feet)", min_value=0.0, format="%.2f", key="length")
+st.number_input("Width (in feet)", min_value=0.0, format="%.2f", key="width")
 
-# Botón
-st.button("Agregar habitación", on_click=agregar_habitacion)
+# Button
+st.button("Add room", on_click=add_room)
 
-# Mostrar listado
-st.subheader("Listado parcial")
-for nombre, area in st.session_state.habitaciones:
-    st.write(f"{nombre}: {area} sf")
+# Partial list
+st.subheader("Partial list")
+for name, area in st.session_state.rooms:
+    st.write(f"{name}: {area} ft²")
 
-# Mostrar resumen copiable
-st.subheader("Resumen completo (copiable)")
-resumen = "\n".join([f"{nombre}: {area} sf" for nombre, area in st.session_state.habitaciones])
-resumen += f"\nTotal: {st.session_state.total_area} sf"
-st.text_area("Resumen", resumen, height=150)
+# Full summary
+st.subheader("Full summary (copy-friendly)")
+summary = "\n".join([f"{name}: {area} ft²" for name, area in st.session_state.rooms])
+summary += f"\nTotal: {st.session_state.total_area} ft²"
+st.text_area("Summary", summary, height=150)
